@@ -51,6 +51,12 @@ public class RestaurantController {
     public String deleteByName(@PathVariable("name") String name) {
         return service.deleteRestaurantByName(name);
     }
+    
+    @GetMapping("/id/{id}")
+    public RestaurantDTO getById(@PathVariable("id") Long id) {
+        return service.getRestaurantById(id);
+    }
+
 
 
 

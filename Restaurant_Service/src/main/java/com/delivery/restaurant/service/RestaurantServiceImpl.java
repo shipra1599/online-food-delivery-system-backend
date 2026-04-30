@@ -64,5 +64,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 	    repository.delete(entity);
 	    return "Restaurant " + name + " deleted successfully!";
 	}
+	
+	@Override
+	public RestaurantDTO getRestaurantById(Long id) {
+	    Restaurant entity = repository.findById(id)
+	            .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found with id: " + id));
+	    return RestaurantMapper.toDTO(entity);
+	}
+
 
 }
