@@ -11,4 +11,6 @@ public interface RestaurantService {
 	List<RestaurantDTO> getAllRestaurants();
 	RestaurantDTO getRestaurantByName(String name);
 	RestaurantDTO updateRestaurantByName(String name, RestaurantVO vo);
+	String deleteRestaurantByName(String name);
+
 }

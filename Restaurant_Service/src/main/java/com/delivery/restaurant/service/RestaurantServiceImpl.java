@@ -56,6 +56,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 	    Restaurant updated = repository.save(entity);
 	    return RestaurantMapper.toDTO(updated);
 	}
-
+	
+	@Override
+	public String deleteRestaurantByName(String name) {
+	    Restaurant entity = repository.findByName(name)
+	            .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found with name: " + name));
+	    repository.delete(entity);
+	    return "Restaurant " + name + " deleted successfully!";
+	}
 
 }
