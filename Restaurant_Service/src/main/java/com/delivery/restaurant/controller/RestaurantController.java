@@ -1,6 +1,9 @@
 package com.delivery.restaurant.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +22,15 @@ public class RestaurantController {
     @Autowired
     private RestaurantService service;
 
-    @PostMapping
+    @PostMapping("/add")
     public String create(@Valid @RequestBody RestaurantVO vo) {
         RestaurantDTO dto = service.createRestaurant(vo);
         return "Restaurant " + dto.getName() + " added successfully";
+    }
+    
+    @GetMapping("/showAll")
+    public List<RestaurantDTO> getAll() {
+        return service.getAllRestaurants();
     }
 
 }

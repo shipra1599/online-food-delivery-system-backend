@@ -1,5 +1,7 @@
 package com.delivery.restaurant.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,4 +27,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 		Restaurant saved = repository.save(entity);
 		return RestaurantMapper.toDTO(saved);
 	}
+	
+	@Override
+	public List<RestaurantDTO> getAllRestaurants() {
+		return repository.findAll()
+		        .stream()
+		        .map(entity -> RestaurantMapper.toDTO(entity))
+		        .toList();
+	}
+
 }
