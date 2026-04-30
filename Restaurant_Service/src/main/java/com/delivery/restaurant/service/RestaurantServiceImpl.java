@@ -44,6 +44,18 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	    return RestaurantMapper.toDTO(entity);
 	}
-	
+
+	@Override
+	public RestaurantDTO updateRestaurantByName(String name, RestaurantVO vo) {
+	    Restaurant entity = repository.findByName(name)
+	            .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found with name: " + name));
+	    entity.setName(vo.getName());
+	    entity.setLocation(vo.getLocation());
+	    entity.setRating(vo.getRating());
+	    entity.setStatus(vo.getStatus());
+	    Restaurant updated = repository.save(entity);
+	    return RestaurantMapper.toDTO(updated);
+	}
+
 
 }
