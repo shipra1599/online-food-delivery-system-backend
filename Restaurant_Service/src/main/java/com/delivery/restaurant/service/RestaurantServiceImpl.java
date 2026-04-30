@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.delivery.restaurant.dto.RestaurantDTO;
 import com.delivery.restaurant.entity.Restaurant;
 import com.delivery.restaurant.exception.RestaurantAlreadyExistsException;
+import com.delivery.restaurant.exception.RestaurantNotFoundException;
 import com.delivery.restaurant.mapper.RestaurantMapper;
 import com.delivery.restaurant.repository.RestaurantRepository;
 import com.delivery.restaurant.vo.RestaurantVO;
@@ -35,5 +36,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 		        .map(entity -> RestaurantMapper.toDTO(entity))
 		        .toList();
 	}
+	
+	@Override
+	public RestaurantDTO getRestaurantByName(String name) {
+	    Restaurant entity = repository.findByName(name)
+	            .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found with name: " + name));
+
+	    return RestaurantMapper.toDTO(entity);
+	}
+	
 
 }

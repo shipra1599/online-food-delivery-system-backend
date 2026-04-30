@@ -9,5 +9,6 @@ public interface RestaurantService {
 
 	RestaurantDTO createRestaurant(RestaurantVO vo);
 	List<RestaurantDTO> getAllRestaurants();
+	RestaurantDTO getRestaurantByName(String name);
 
 }

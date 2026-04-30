@@ -29,4 +29,10 @@ public class GlobalExceptionHandler {
 		error.put("error", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(RestaurantNotFoundException.class)
+	public ResponseEntity<String> handleRestaurantNotFound(RestaurantNotFoundException ex) {
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
 }
