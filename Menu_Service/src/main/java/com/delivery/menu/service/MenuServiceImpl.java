@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.delivery.menu.dto.MenuDTO;
 import com.delivery.menu.entity.Menu;
+import com.delivery.menu.exception.ItemNotFoundException;
 import com.delivery.menu.exception.MenuAlreadyExistsException;
 import com.delivery.menu.mapper.MenuMapper;
 import com.delivery.menu.repository.MenuRepository;
@@ -43,5 +44,25 @@ public class MenuServiceImpl implements MenuService {
                 .map(entity -> MenuMapper.toDTO(entity))
                 .toList();
     }
+    
+
+    @Override
+    public MenuDTO updateMenu(Long id, MenuVO vo) {
+
+        Menu existing = repository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Menu item not found with id: " + id));
+
+        existing.setItemName(vo.getItemName());
+        existing.setPrice(vo.getPrice());
+        existing.setCategory(vo.getCategory());
+        existing.setIsAvailable(vo.getIsAvailable());
+        existing.setRestaurantId(vo.getRestaurantId());
+
+        Menu updated = repository.save(existing);
+
+        return MenuMapper.toDTO(updated);
+    }
+
+
    
 }

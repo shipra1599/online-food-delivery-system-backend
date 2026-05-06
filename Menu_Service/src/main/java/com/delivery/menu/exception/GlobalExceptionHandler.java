@@ -29,5 +29,11 @@ public class GlobalExceptionHandler {
 	    error.put("error", ex.getMessage());
 	    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(ItemNotFoundException.class)
+	public ResponseEntity<String> handleItemInMenuNotFound(ItemNotFoundException ex) {
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
 
 }
