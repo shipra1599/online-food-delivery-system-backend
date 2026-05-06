@@ -35,6 +35,13 @@ public class MenuServiceImpl implements MenuService {
                 .map(entity -> MenuMapper.toDTO(entity))
                 .toList();
     }
-
-
+    
+    @Override
+    public List<MenuDTO> getAllMenus() {
+        return repository.findAll()
+                .stream()
+                .map(entity -> MenuMapper.toDTO(entity))
+                .toList();
+    }
+   
 }

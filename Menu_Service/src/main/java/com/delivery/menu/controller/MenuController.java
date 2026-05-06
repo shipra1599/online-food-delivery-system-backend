@@ -33,6 +33,11 @@ public class MenuController {
     public List<MenuDTO> getMenusByRestaurant(@PathVariable ("restaurantId") Long restaurantId) {
         return service.getMenusByRestaurantId(restaurantId);
     }
+    
+    @GetMapping("/showAll")
+    public List<MenuDTO> getAllMenus() {
+        return service.getAllMenus();
+    }
 
 
 }

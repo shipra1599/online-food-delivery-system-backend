@@ -10,6 +10,8 @@ public interface MenuService {
 	
 	MenuDTO addMenu(MenuVO vo);
 	List<MenuDTO> getMenusByRestaurantId(Long restaurantId);
+	List<MenuDTO> getAllMenus();
+
 
 
 
