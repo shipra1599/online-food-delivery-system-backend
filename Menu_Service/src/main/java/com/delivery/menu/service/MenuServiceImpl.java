@@ -71,4 +71,13 @@ public class MenuServiceImpl implements MenuService {
 
         return MenuMapper.toDTO(updated);
     } 
+    
+    @Override
+    public void deleteMenu(Long id) {
+
+        Menu existing = repository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Menu item not found with id: " + id));
+        repository.delete(existing);
+    }
+
 }

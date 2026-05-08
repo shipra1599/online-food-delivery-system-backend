@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +46,13 @@ public class MenuController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updateMenu(@PathVariable("id") Long id,@RequestBody MenuVO vo) {
         MenuDTO updated = service.updateMenu(id, vo);
-        return ResponseEntity.ok("Item '" + updated.getItemName() + "' updated successfully");
+        return ResponseEntity.ok("Item '" + updated.getItemName() + "' updated successfully !!");
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteMenu(@PathVariable("id") Long id) {
+        service.deleteMenu(id);
+        return ResponseEntity.ok("Item with id " + id + " deleted successfully !!");
     }
 
 }

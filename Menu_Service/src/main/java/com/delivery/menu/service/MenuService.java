@@ -11,9 +11,5 @@ public interface MenuService {
 	List<MenuDTO> getMenusByRestaurantId(Long restaurantId);
 	List<MenuDTO> getAllMenus();
 	MenuDTO updateMenu(Long id, MenuVO vo);
-
-
-
-
-
+	void deleteMenu(Long id);
 }
