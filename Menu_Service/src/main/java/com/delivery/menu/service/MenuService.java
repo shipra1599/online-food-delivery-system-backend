@@ -9,6 +9,7 @@ public interface MenuService {
 	
 	MenuDTO addMenu(MenuVO vo);
 	List<MenuDTO> getMenusByRestaurantId(Long restaurantId);
+	MenuDTO getMenuById(Long id);
 	List<MenuDTO> getAllMenus();
 	MenuDTO updateMenu(Long id, MenuVO vo);
 	void deleteMenu(Long id);

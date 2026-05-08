@@ -37,12 +37,16 @@ public class MenuController {
         return service.getMenusByRestaurantId(restaurantId);
     }
     
+    @GetMapping("/{id}")
+    public MenuDTO getMenuById(@PathVariable("id") Long id) {
+        return service.getMenuById(id);
+    }
+    
     @GetMapping("/showAll")
     public List<MenuDTO> getAllMenus() {
         return service.getAllMenus();
     }
     
-
     @PutMapping("/{id}")
     public ResponseEntity<String> updateMenu(@PathVariable("id") Long id,@RequestBody MenuVO vo) {
         MenuDTO updated = service.updateMenu(id, vo);

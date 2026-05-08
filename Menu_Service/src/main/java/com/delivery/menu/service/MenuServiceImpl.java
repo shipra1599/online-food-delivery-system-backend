@@ -38,6 +38,16 @@ public class MenuServiceImpl implements MenuService {
     }
     
     @Override
+    public MenuDTO getMenuById(Long id) {
+
+        Menu menu = repository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Menu item not found with id: " + id));
+
+        return MenuMapper.toDTO(menu);
+    }
+
+    
+    @Override
     public List<MenuDTO> getAllMenus() {
         return repository.findAll()
                 .stream()
