@@ -51,18 +51,24 @@ public class MenuServiceImpl implements MenuService {
 
         Menu existing = repository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Menu item not found with id: " + id));
-
-        existing.setItemName(vo.getItemName());
-        existing.setPrice(vo.getPrice());
-        existing.setCategory(vo.getCategory());
-        existing.setIsAvailable(vo.getIsAvailable());
-        existing.setRestaurantId(vo.getRestaurantId());
+        if (vo.getItemName() != null) {
+            existing.setItemName(vo.getItemName());
+        }
+        if (vo.getPrice() != null) {
+            existing.setPrice(vo.getPrice());
+        }
+        if (vo.getCategory() != null) {
+            existing.setCategory(vo.getCategory());
+        }
+        if (vo.getIsAvailable() != null) {
+            existing.setIsAvailable(vo.getIsAvailable());
+        }
+        if (vo.getRestaurantId() != null) {
+            existing.setRestaurantId(vo.getRestaurantId());
+        }
 
         Menu updated = repository.save(existing);
 
         return MenuMapper.toDTO(updated);
-    }
-
-
-   
+    } 
 }
