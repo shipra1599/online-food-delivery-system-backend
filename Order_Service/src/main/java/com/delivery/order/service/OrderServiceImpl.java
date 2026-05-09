@@ -9,6 +9,7 @@ import com.delivery.order.dto.OrderDTO;
 import com.delivery.order.entity.Order;
 import com.delivery.order.entity.OrderItem;
 import com.delivery.order.enums.OrderStatus;
+import com.delivery.order.exception.InvalidOrderStatusException;
 import com.delivery.order.exception.OrderNotFoundException;
 import com.delivery.order.mapper.OrderMapper;
 import com.delivery.order.repository.OrderRepository;
@@ -65,6 +66,26 @@ public class OrderServiceImpl implements OrderService {
 
         return mapper.toDTO(order);
     }
+
+    
+    @Override
+    public OrderDTO updateOrderStatus(Long id, String status) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
+        // Convert string → enum
+        OrderStatus newStatus;
+        try {
+            newStatus = OrderStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidOrderStatusException("Invalid status: " + status);
+        }
+        order.setStatus(newStatus);
+        Order updated = orderRepository.save(order);
+        return mapper.toDTO(updated);
+    }
+
+
 
 
 }

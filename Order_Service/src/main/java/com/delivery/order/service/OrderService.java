@@ -10,6 +10,8 @@ public interface OrderService {
 	 OrderDTO createOrder(OrderVO vo);
 	 List<Long> getAllOrderIds();
 	 OrderDTO getOrderById(Long id);
+	 OrderDTO updateOrderStatus(Long id, String status);
+
 
 
 }
