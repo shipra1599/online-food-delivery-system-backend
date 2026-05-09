@@ -3,6 +3,7 @@ package com.delivery.order.entity;
 import java.util.List;
 
 import com.delivery.order.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -32,7 +33,8 @@ public class Order {
     private OrderStatus status;
 
     private Double price;
-
+    
+    @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 

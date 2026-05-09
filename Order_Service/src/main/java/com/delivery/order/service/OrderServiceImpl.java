@@ -84,6 +84,17 @@ public class OrderServiceImpl implements OrderService {
         Order updated = orderRepository.save(order);
         return mapper.toDTO(updated);
     }
+    
+    @Override
+    public List<OrderItem> getOrderItems(Long id) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
+
+        return order.getItems();
+    }
+
+    
 
 
 

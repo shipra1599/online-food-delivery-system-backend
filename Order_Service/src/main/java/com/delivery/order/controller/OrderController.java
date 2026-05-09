@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.delivery.order.dto.OrderDTO;
+import com.delivery.order.entity.OrderItem;
 import com.delivery.order.service.OrderService;
 import com.delivery.order.vo.OrderVO;
 
@@ -43,5 +44,11 @@ public class OrderController {
     public OrderDTO updateOrderStatus(@PathVariable ("id") Long id, @RequestBody String status) {
         return orderService.updateOrderStatus(id, status);
     }
+    
+    @GetMapping("/{id}/items")
+    public List<OrderItem> getOrderItems(@PathVariable("id") Long id) {
+        return orderService.getOrderItems(id);
+    }
+
 
 }
