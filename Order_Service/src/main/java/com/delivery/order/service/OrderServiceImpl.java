@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.delivery.order.dto.AddOrderItemDTO;
 import com.delivery.order.dto.OrderDTO;
 import com.delivery.order.entity.Order;
 import com.delivery.order.entity.OrderItem;
@@ -93,10 +94,23 @@ public class OrderServiceImpl implements OrderService {
 
         return order.getItems();
     }
-
     
+    @Override
+    public String addItemToOrder(Long orderId, AddOrderItemDTO dto) {
 
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
 
+        OrderItem item = new OrderItem();
+        item.setItemId(dto.getItemId());
+        item.setQuantity(dto.getQuantity());
+        item.setOrder(order);
 
+        order.getItems().add(item);
+
+        orderRepository.save(order);
+
+        return "Item added successfully";
+    }
 
 }
