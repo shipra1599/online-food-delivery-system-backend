@@ -9,6 +9,7 @@ import com.delivery.order.dto.OrderDTO;
 import com.delivery.order.entity.Order;
 import com.delivery.order.entity.OrderItem;
 import com.delivery.order.enums.OrderStatus;
+import com.delivery.order.exception.OrderNotFoundException;
 import com.delivery.order.mapper.OrderMapper;
 import com.delivery.order.repository.OrderRepository;
 import com.delivery.order.vo.OrderVO;
@@ -54,6 +55,15 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(order -> order.getOrderId())
                 .toList();
+    }
+    
+    @Override
+    public OrderDTO getOrderById(Long id) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
+
+        return mapper.toDTO(order);
     }
 
 
