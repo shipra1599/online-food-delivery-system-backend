@@ -1,6 +1,9 @@
 package com.delivery.order.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,4 +26,10 @@ public class OrderController {
     public OrderDTO createOrder(@Valid @RequestBody OrderVO vo) {
         return orderService.createOrder(vo);
     }
+    
+    @GetMapping("/showAllId")
+    public List<Long> getAllOrderIds() {
+        return orderService.getAllOrderIds();
+    }
+
 }

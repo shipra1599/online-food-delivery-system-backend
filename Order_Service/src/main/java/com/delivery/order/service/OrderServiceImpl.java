@@ -47,5 +47,14 @@ public class OrderServiceImpl implements OrderService {
                 .mapToDouble(i -> i.getQuantity() * 100.0) // temporary price, will be replaced by Feign call to Menu Service
                 .sum();
     }
+    
+    @Override
+    public List<Long> getAllOrderIds() {
+        return orderRepository.findAll()
+                .stream()
+                .map(order -> order.getOrderId())
+                .toList();
+    }
+
 
 }
