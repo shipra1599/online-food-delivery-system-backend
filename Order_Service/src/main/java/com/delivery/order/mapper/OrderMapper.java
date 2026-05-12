@@ -59,7 +59,9 @@ public class OrderMapper {
     private OrderItemDTO toDTO(OrderItem item) {
         return new OrderItemDTO(
                 item.getItemId(),
-                item.getQuantity()
+                item.getQuantity(),
+                item.getOrderItemId()
         );
     }
-}
+
+    }

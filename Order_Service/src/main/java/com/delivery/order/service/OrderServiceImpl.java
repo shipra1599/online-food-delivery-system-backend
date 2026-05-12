@@ -11,6 +11,7 @@ import com.delivery.order.entity.Order;
 import com.delivery.order.entity.OrderItem;
 import com.delivery.order.enums.OrderStatus;
 import com.delivery.order.exception.InvalidOrderStatusException;
+import com.delivery.order.exception.OrderItemNotFoundException;
 import com.delivery.order.exception.OrderNotFoundException;
 import com.delivery.order.mapper.OrderMapper;
 import com.delivery.order.repository.OrderRepository;
@@ -111,6 +112,24 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         return "Item added successfully";
+    }
+    
+    @Override
+    public String removeItemFromOrder(Long orderId, Long orderItemId) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+        OrderItem itemToRemove = order.getItems().stream()
+                .filter(i -> i.getOrderItemId().equals(orderItemId))
+                .findFirst()
+                .orElseThrow(() -> new OrderItemNotFoundException("Order item not found"));
+
+        order.getItems().remove(itemToRemove);
+
+        orderRepository.save(order);
+
+        return "Item removed successfully";
     }
 
 }

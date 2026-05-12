@@ -15,4 +15,6 @@ public interface OrderService {
 	 OrderDTO updateOrderStatus(Long id, String status);
 	 List<OrderItem> getOrderItems(Long id);
 	 String addItemToOrder(Long orderId, AddOrderItemDTO dto);
+	 String removeItemFromOrder(Long orderId, Long itemId);
+
 }

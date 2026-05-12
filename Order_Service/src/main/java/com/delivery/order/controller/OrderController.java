@@ -3,6 +3,7 @@ package com.delivery.order.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,10 +53,13 @@ public class OrderController {
     }
     
     @PostMapping("/{orderId}/items")
-    public String addItemToOrder(
-            @PathVariable("orderId") Long orderId,
-            @RequestBody AddOrderItemDTO dto) {
+    public String addItemToOrder(@PathVariable("orderId") Long orderId,@RequestBody AddOrderItemDTO dto) {
         return orderService.addItemToOrder(orderId, dto);
+    }
+
+    @DeleteMapping("/{orderId}/items/{orderItemId}")
+    public String removeItemFromOrder(@PathVariable ("orderId") Long orderId,@PathVariable ("orderItemId") Long orderItemId) {
+        return orderService.removeItemFromOrder(orderId, orderItemId);
     }
 
 }

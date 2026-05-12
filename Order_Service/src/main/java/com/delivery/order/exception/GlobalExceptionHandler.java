@@ -32,6 +32,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidStatus(InvalidOrderStatusException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
-
-
+    
+    @ExceptionHandler(OrderItemNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleOrderItemNotFound(OrderItemNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }
