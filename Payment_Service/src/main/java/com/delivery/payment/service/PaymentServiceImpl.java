@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.delivery.payment.dto.PaymentDTO;
 import com.delivery.payment.entity.Payment;
+import com.delivery.payment.exception.PaymentNotFoundException;
 import com.delivery.payment.mapper.PaymentMapper;
 import com.delivery.payment.repository.PaymentRepository;
 import com.delivery.payment.vo.PaymentVO;
@@ -25,5 +26,14 @@ public class PaymentServiceImpl implements PaymentService {
         Payment saved = paymentRepository.save(payment);
         return paymentMapper.toDTO(saved);
     }
+    
+    @Override
+    public PaymentDTO getPaymentById(Long id) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
+
+        return paymentMapper.toDTO(payment);
+    }
+
 }
                 
