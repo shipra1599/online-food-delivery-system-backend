@@ -1,0 +1,29 @@
+package com.delivery.payment.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.delivery.payment.dto.PaymentDTO;
+import com.delivery.payment.entity.Payment;
+import com.delivery.payment.mapper.PaymentMapper;
+import com.delivery.payment.repository.PaymentRepository;
+import com.delivery.payment.vo.PaymentVO;
+
+
+@Service
+public class PaymentServiceImpl implements PaymentService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private PaymentMapper paymentMapper;
+
+    @Override
+    public PaymentDTO createPayment(PaymentVO vo) {
+        Payment payment = paymentMapper.toEntity(vo);
+        Payment saved = paymentRepository.save(payment);
+        return paymentMapper.toDTO(saved);
+    }
+}
+                
