@@ -1,5 +1,7 @@
 package com.delivery.payment.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         return paymentMapper.toDTO(payment);
     }
+    
+    @Override
+    public List<PaymentDTO> getAllPayments() {
+        return paymentRepository.findAll()
+                .stream()
+                .map(payment->paymentMapper.toDTO(payment))
+                .toList();
+    }
+
+
 
 }
                 

@@ -1,5 +1,7 @@
 package com.delivery.payment.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +28,13 @@ public class PaymentController {
         return paymentService.createPayment(vo);
     }
     
+    @GetMapping("/showAll")
+    public List<PaymentDTO> getAllPayments() {
+        return paymentService.getAllPayments();
+    }
+    
     @GetMapping("/{id}")
-    public PaymentDTO getPaymentById(@PathVariable ("id") Long id) {
+    public PaymentDTO getPaymentById(@PathVariable("id") Long id) {
         return paymentService.getPaymentById(id);
     }
-
 }
