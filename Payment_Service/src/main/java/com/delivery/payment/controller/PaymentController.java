@@ -14,25 +14,47 @@ import com.delivery.payment.dto.PaymentDTO;
 import com.delivery.payment.service.PaymentService;
 import com.delivery.payment.vo.PaymentVO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/payments")
+@Tag(
+    name = "Payment API",description = "Endpoints for processing and retrieving payment information"
+)
 public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
 
+    @Operation(
+        summary = "Create a new payment",description = "Processes a new payment for an order."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Payment created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid payment request")
+    })
     @PostMapping("/add")
     public PaymentDTO createPayment(@Valid @RequestBody PaymentVO vo) {
         return paymentService.createPayment(vo);
     }
-    
+
+    @Operation(
+        summary = "Get all payments",description = "Returns a list of all processed payments."
+    )
+    @ApiResponse(responseCode = "200", description = "Payments retrieved successfully")
     @GetMapping("/showAll")
     public List<PaymentDTO> getAllPayments() {
         return paymentService.getAllPayments();
     }
-    
+
+    @Operation(
+        summary = "Get payment by ID",description = "Fetches payment details using the payment ID."
+    )
+    @ApiResponse(responseCode = "200", description = "Payment retrieved successfully")
     @GetMapping("/{id}")
     public PaymentDTO getPaymentById(@PathVariable("id") Long id) {
         return paymentService.getPaymentById(id);
