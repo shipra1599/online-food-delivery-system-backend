@@ -9,6 +9,8 @@ import com.delivery.menu.dto.MenuDTO;
 import com.delivery.menu.entity.Menu;
 import com.delivery.menu.exception.ItemNotFoundException;
 import com.delivery.menu.exception.MenuAlreadyExistsException;
+import com.delivery.menu.exception.RestaurantNotFoundException;
+import com.delivery.menu.feignclient.RestaurantClient;
 import com.delivery.menu.mapper.MenuMapper;
 import com.delivery.menu.repository.MenuRepository;
 import com.delivery.menu.vo.MenuVO;
@@ -18,12 +20,27 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private MenuRepository repository;
+    
+    @Autowired
+    private RestaurantClient restaurantClient;
+
 
     @Override
     public MenuDTO addMenu(MenuVO vo) {
-    	if (repository.existsByRestaurantIdAndItemName(vo.getRestaurantId(), vo.getItemName())) {
-    	    throw new MenuAlreadyExistsException("Menu item already exists for this restaurant");
+    	// Validate restaurant existence via Feign; if Restaurant Service returns 404, stop menu creation
+    	try {
+    	    restaurantClient.getRestaurantById(vo.getRestaurantId());
+    	} catch (feign.FeignException.NotFound e) {
+    	    throw new RestaurantNotFoundException(
+    	        "Cannot add menu item because restaurant does not exist with id: " + vo.getRestaurantId()
+    	    );
     	}
+
+        //Check if menu item already exists
+        if (repository.existsByRestaurantIdAndItemName(vo.getRestaurantId(), vo.getItemName())) {
+            throw new MenuAlreadyExistsException("Menu item already exists for this restaurant");
+        }
+       //Save menu item
         Menu entity = MenuMapper.toEntity(vo);
         Menu saved = repository.save(entity);
         return MenuMapper.toDTO(saved);

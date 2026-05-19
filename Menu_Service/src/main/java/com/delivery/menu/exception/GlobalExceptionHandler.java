@@ -34,6 +34,14 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleItemInMenuNotFound(ItemNotFoundException ex) {
 	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 	}
+	
+	@ExceptionHandler(RestaurantNotFoundException.class)
+	public ResponseEntity<Map<String, String>> handleRestaurantNotFound(RestaurantNotFoundException ex) {
+	    Map<String, String> error = new HashMap<>();
+	    error.put("error", ex.getMessage());
+	    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
 
 
 }

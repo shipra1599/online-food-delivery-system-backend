@@ -57,7 +57,7 @@ public class MenuController {
         summary = "Get menu item by ID",description = "Returns the details of a menu item using its ID."
     )
     @ApiResponse(responseCode = "200", description = "Menu item retrieved successfully")
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public MenuDTO getMenuById(@PathVariable("id") Long id) {
         return service.getMenuById(id);
     }
@@ -75,7 +75,7 @@ public class MenuController {
         summary = "Update a menu item",description = "Updates a menu item using its ID and returns a confirmation message."
     )
     @ApiResponse(responseCode = "200", description = "Returns a message confirming the item was updated")
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<String> updateMenu(@PathVariable("id") Long id, @RequestBody MenuVO vo) {
         MenuDTO updated = service.updateMenu(id, vo);
         return ResponseEntity.ok("Item '" + updated.getItemName() + "' updated successfully !!");
@@ -85,7 +85,7 @@ public class MenuController {
         summary = "Delete a menu item",description = "Deletes a menu item from the system using its ID."
     )
     @ApiResponse(responseCode = "200", description = "Returns a message confirming the item was deleted")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<String> deleteMenu(@PathVariable("id") Long id) {
         service.deleteMenu(id);
         return ResponseEntity.ok("Item with id " + id + " deleted successfully !!");
