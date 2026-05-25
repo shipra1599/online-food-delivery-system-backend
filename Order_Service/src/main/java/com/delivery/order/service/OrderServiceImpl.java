@@ -6,25 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.delivery.order.dto.AddOrderItemDTO;
+import com.delivery.order.dto.MenuDTO;
 import com.delivery.order.dto.OrderDTO;
 import com.delivery.order.entity.Order;
 import com.delivery.order.entity.OrderItem;
 import com.delivery.order.enums.OrderStatus;
 import com.delivery.order.exception.InvalidOrderStatusException;
+import com.delivery.order.exception.MenuItemNotFoundException;
 import com.delivery.order.exception.OrderItemNotFoundException;
 import com.delivery.order.exception.OrderNotFoundException;
+import com.delivery.order.feign.MenuClient.MenuClient;
 import com.delivery.order.mapper.OrderMapper;
 import com.delivery.order.repository.OrderRepository;
 import com.delivery.order.vo.OrderVO;
 
+import feign.FeignException;
+
 @Service
 public class OrderServiceImpl implements OrderService {
-	
-	@Autowired
+
+    @Autowired
     private OrderRepository orderRepository;
 
     @Autowired
     private OrderMapper mapper;
+
+    @Autowired
+    private MenuClient menuClient;
 
     @Override
     public OrderDTO createOrder(OrderVO vo) {
@@ -32,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
         // Convert VO → Entity
         Order order = mapper.toEntity(vo);
 
-        // Calculate total amount ,later will be done by Feign call)
-        double total = calculateTotal(order.getItems());
+        // Validate each item using Feign and calculate total
+        double total = calculateTotalUsingFeign(order.getItems());
         order.setTotalAmount(total);
 
         // Default status
@@ -46,12 +54,27 @@ public class OrderServiceImpl implements OrderService {
         return mapper.toDTO(savedOrder);
     }
 
-    private double calculateTotal(List<OrderItem> items) {
-                return items.stream()
-                .mapToDouble(i -> i.getQuantity() * 100.0) // temporary price, will be replaced by Feign call to Menu Service
+    // Price calculation using Feign
+    private double calculateTotalUsingFeign(List<OrderItem> items) {
+
+        return items.stream()
+                .mapToDouble(item -> {
+
+                    MenuDTO menu;
+
+                    try {
+                        menu = menuClient.getMenuById(item.getItemId());
+                    } catch (FeignException.NotFound e) {
+                        throw new MenuItemNotFoundException(
+                                "Menu item not found with id: " + item.getItemId()
+                        );
+                    }
+
+                    return menu.getPrice() * item.getQuantity();
+                })
                 .sum();
     }
-    
+
     @Override
     public List<Long> getAllOrderIds() {
         return orderRepository.findAll()
@@ -59,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(order -> order.getOrderId())
                 .toList();
     }
-    
+
     @Override
     public OrderDTO getOrderById(Long id) {
 
@@ -69,13 +92,11 @@ public class OrderServiceImpl implements OrderService {
         return mapper.toDTO(order);
     }
 
-    
     @Override
     public OrderDTO updateOrderStatus(Long id, String status) {
 
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
-        // Convert string → enum
         OrderStatus newStatus;
         try {
             newStatus = OrderStatus.valueOf(status.toUpperCase());
@@ -86,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
         Order updated = orderRepository.save(order);
         return mapper.toDTO(updated);
     }
-    
+
     @Override
     public List<OrderItem> getOrderItems(Long id) {
 
@@ -95,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
 
         return order.getItems();
     }
-    
+
     @Override
     public String addItemToOrder(Long orderId, AddOrderItemDTO dto) {
 
@@ -113,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
 
         return "Item added successfully";
     }
-    
+
     @Override
     public String removeItemFromOrder(Long orderId, Long orderItemId) {
 
@@ -131,5 +152,4 @@ public class OrderServiceImpl implements OrderService {
 
         return "Item removed successfully";
     }
-
 }
