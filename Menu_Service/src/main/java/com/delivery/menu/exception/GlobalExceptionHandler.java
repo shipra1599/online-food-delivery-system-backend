@@ -41,7 +41,11 @@ public class GlobalExceptionHandler {
 	    error.put("error", ex.getMessage());
 	    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
-
-
-
+	
+	@ExceptionHandler(RestaurantServiceUnavailableException.class)
+	public ResponseEntity<Map<String, String>> handleRestaurantServiceUnavailable(RestaurantServiceUnavailableException ex) {
+	    Map<String, String> response = new HashMap<>();
+	    response.put("message", ex.getMessage());
+	    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+	}
 }

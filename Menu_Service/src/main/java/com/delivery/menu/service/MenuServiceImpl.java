@@ -10,10 +10,13 @@ import com.delivery.menu.entity.Menu;
 import com.delivery.menu.exception.ItemNotFoundException;
 import com.delivery.menu.exception.MenuAlreadyExistsException;
 import com.delivery.menu.exception.RestaurantNotFoundException;
+import com.delivery.menu.exception.RestaurantServiceUnavailableException;
 import com.delivery.menu.feignclient.RestaurantClient;
 import com.delivery.menu.mapper.MenuMapper;
 import com.delivery.menu.repository.MenuRepository;
 import com.delivery.menu.vo.MenuVO;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -26,6 +29,7 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
+    @CircuitBreaker(name = "restaurantService", fallbackMethod = "restaurantFallback")
     public MenuDTO addMenu(MenuVO vo) {
     	// Validate restaurant existence via Feign; if Restaurant Service returns 404, stop menu creation
     	try {
@@ -106,5 +110,22 @@ public class MenuServiceImpl implements MenuService {
                 .orElseThrow(() -> new ItemNotFoundException("Menu item not found with id: " + id));
         repository.delete(existing);
     }
+    
+   // Adding fallback methods 
+    public MenuDTO restaurantFallback(MenuVO vo, Throwable ex) {
+
+        // If the exception is a business exception, throw it
+        if (ex instanceof MenuAlreadyExistsException ||
+            ex instanceof RestaurantNotFoundException) {
+            throw (RuntimeException) ex;
+        }
+
+        // Otherwise, it's Restaurant Service not available
+        throw new RestaurantServiceUnavailableException(
+            "Restaurant Service is unavailable. Please try again later."
+        );
+    }
+
+
 
 }
