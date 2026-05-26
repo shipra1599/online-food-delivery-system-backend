@@ -31,18 +31,6 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @Operation(
-        summary = "Create a new payment",description = "Processes a new payment for an order."
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Payment created successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid payment request")
-    })
-    @PostMapping("/add")
-    public PaymentDTO createPayment(@Valid @RequestBody PaymentVO vo) {
-        return paymentService.createPayment(vo);
-    }
-
-    @Operation(
         summary = "Get all payments",description = "Returns a list of all processed payments."
     )
     @ApiResponse(responseCode = "200", description = "Payments retrieved successfully")

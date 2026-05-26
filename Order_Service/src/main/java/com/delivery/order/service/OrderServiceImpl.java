@@ -15,7 +15,9 @@ import com.delivery.order.exception.InvalidOrderStatusException;
 import com.delivery.order.exception.MenuItemNotFoundException;
 import com.delivery.order.exception.OrderItemNotFoundException;
 import com.delivery.order.exception.OrderNotFoundException;
-import com.delivery.order.feign.MenuClient.MenuClient;
+import com.delivery.order.feign.menuclient.MenuClient;
+import com.delivery.order.kafka.OrderEvent;
+import com.delivery.order.kafka.OrderProducer;
 import com.delivery.order.mapper.OrderMapper;
 import com.delivery.order.repository.OrderRepository;
 import com.delivery.order.vo.OrderVO;
@@ -33,6 +35,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private MenuClient menuClient;
+    
+    @Autowired
+    private OrderProducer orderProducer;
 
     @Override
     public OrderDTO createOrder(OrderVO vo) {
@@ -46,10 +51,17 @@ public class OrderServiceImpl implements OrderService {
 
         // Default status
         order.setStatus(OrderStatus.CREATED);
-
         // Save order
-        Order savedOrder = orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order); 
+        OrderEvent event = new OrderEvent(
+                savedOrder.getOrderId(),
+                savedOrder.getCustomerId(),
+                savedOrder.getRestaurantId(),
+                savedOrder.getTotalAmount(),
+                "CREATED"
+        );
 
+        orderProducer.sendOrderEvent(event);
         // Convert Entity → DTO
         return mapper.toDTO(savedOrder);
     }

@@ -1,4 +1,4 @@
-package com.delivery.order.feign.MenuClient;
+package com.delivery.order.feign.menuclient;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
