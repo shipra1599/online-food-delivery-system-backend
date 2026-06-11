@@ -13,6 +13,7 @@ import com.delivery.order.entity.OrderItem;
 import com.delivery.order.enums.OrderStatus;
 import com.delivery.order.exception.InvalidOrderStatusException;
 import com.delivery.order.exception.MenuItemNotFoundException;
+import com.delivery.order.exception.MenuServiceUnavailableException;
 import com.delivery.order.exception.OrderItemNotFoundException;
 import com.delivery.order.exception.OrderNotFoundException;
 import com.delivery.order.feign.menuclient.MenuClient;
@@ -23,6 +24,7 @@ import com.delivery.order.repository.OrderRepository;
 import com.delivery.order.vo.OrderVO;
 
 import feign.FeignException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -40,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderProducer orderProducer;
 
     @Override
+    @CircuitBreaker(name = "menuService", fallbackMethod = "menuFallback")
     public OrderDTO createOrder(OrderVO vo) {
 
         // Convert VO → Entity
@@ -163,5 +166,20 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         return "Item removed successfully";
+    }
+    
+   // Adding fallback methods 
+    
+    public OrderDTO menuFallback(OrderVO vo, Throwable ex) {
+
+        // If it's a business exception, rethrow it
+        if (ex instanceof MenuItemNotFoundException) {
+            throw (RuntimeException) ex;
+        }
+
+        // Otherwise, Menu Service not available
+        throw new MenuServiceUnavailableException(
+            "Menu Service is unavailable. Please try again later."
+        );
     }
 }
